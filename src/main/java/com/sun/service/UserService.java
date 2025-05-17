@@ -1,10 +1,10 @@
 package com.sun.service;
 
-import com.sun.dto.LoginDto;
+
 import com.sun.dto.QuoteApiResponceDto;
 import com.sun.dto.ResetPwdForm;
 import com.sun.dto.UserDto;
-import com.sun.entity.User;
+
 import java.util.Map;
 
 public interface UserService {

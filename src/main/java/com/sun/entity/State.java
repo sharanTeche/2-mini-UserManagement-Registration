@@ -1,7 +1,7 @@
 package com.sun.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+
 
 
 @Entity

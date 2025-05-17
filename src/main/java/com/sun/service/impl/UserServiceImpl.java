@@ -15,11 +15,14 @@ import com.sun.repo.UserRepository;
 import com.sun.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -40,7 +43,10 @@ public class UserServiceImpl implements UserService {
     CityRepository cityRepository;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+
+    @SuppressWarnings("java:S2245")
+    private final Random rand = new Random();
 
     public UserServiceImpl(EmailServcie emailService, UserRepository userRepository,
                            CountryRepository countryRepository,
@@ -106,11 +112,10 @@ public class UserServiceImpl implements UserService {
     }
 
 
-        public static String generatePassword() {
+        public  String generatePassword() {
             String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             int length = 10;  // Fixed length
             StringBuilder password = new StringBuilder();
-            Random rand = new Random();
 
             for (int i = 0; i < length; i++) {
                 int index = rand.nextInt(chars.length());
@@ -147,20 +152,19 @@ public class UserServiceImpl implements UserService {
         String url = "https://dummyjson.com/quotes/random";
 
         RestTemplate rt = new RestTemplate();
-        ResponseEntity<QuoteApiResponceDto> response = rt.getForEntity(url, QuoteApiResponceDto.class);
+       return rt.getForEntity(url, QuoteApiResponceDto.class).getBody();
 
-        return response.getBody();
+
     }
 
     private UserDto mapToDTO(User user) {
-        UserDto dto = modelMapper.map(user, UserDto.class);
-        return dto;
+        return modelMapper.map(user, UserDto.class);
+
     }
 
 
     private User mapToEntity(UserDto userDto) {
-        User user = modelMapper.map(userDto, User.class);
-        return user;
-    }
+        return modelMapper.map(userDto, User.class);
 
+    }
 }

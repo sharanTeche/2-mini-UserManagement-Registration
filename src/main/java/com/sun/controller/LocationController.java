@@ -4,11 +4,9 @@ import com.sun.entity.City;
 import com.sun.entity.Country;
 import com.sun.entity.State;
 import com.sun.service.LocationService;
-import com.sun.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 public class LocationController {

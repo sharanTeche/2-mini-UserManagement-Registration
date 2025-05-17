@@ -5,17 +5,21 @@ import com.sun.dto.LoginDto;
 import com.sun.dto.QuoteApiResponceDto;
 import com.sun.dto.ResetPwdForm;
 import com.sun.dto.UserDto;
-import com.sun.entity.User;
 import com.sun.service.UserService;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
+
+import static com.sun.constant.AppConstant.*;
 
 @Controller
 public class UserController {
@@ -35,7 +39,7 @@ public class UserController {
         UserDto login = userService.login(user.getEmail(), user.getPwd());
 
         if (login == null) {
-            model.addAttribute("emsg","Invalid credentails");
+            model.addAttribute(ERROR_MSG,"Invalid credentails");
             return "index";
         }
        String password = login.getPwdUpdated();
@@ -43,7 +47,7 @@ public class UserController {
             ResetPwdForm resetPwdDto = new ResetPwdForm();
             resetPwdDto.setUserId(login.getUserId());
             model.addAttribute("resetPwd",resetPwdDto);
-            return "resetPwd";
+            return RESET_PWD;
         }else {
             QuoteApiResponceDto quoteApiResponceDto = userService.getQuote();
             model.addAttribute("quote", quoteApiResponceDto);
@@ -56,8 +60,8 @@ public class UserController {
     public String updatePwd(@ModelAttribute("resetPwd") ResetPwdForm resetPwd, Model model) {
 
         if(!resetPwd.getNewPwd().equals(resetPwd.getConfirmPwd())) {
-            model.addAttribute("errMsg", "Both Pwds should be same");
-            return "resetPwd";
+            model.addAttribute(ERROR_MSG, "Both Pwds should be same");
+            return RESET_PWD;
         }
 
         boolean status = userService.resetPwd(resetPwd);
@@ -66,8 +70,8 @@ public class UserController {
             return "redirect:dashboard";
         }
 
-        model.addAttribute("errMsg", "Pwd update failed");
-        return "resetPwd";
+        model.addAttribute(ERROR_MSG, "Pwd update failed");
+        return RESET_PWD;
 
     }
 
@@ -85,9 +89,9 @@ public class UserController {
         boolean saveUser = userService.register(userDto);
 
         if(saveUser) {
-            model.addAttribute("succMsg", "Registration Success");
+            model.addAttribute(SUCESS_MSG, "Registration Success");
         }else {
-            model.addAttribute("errMsg", "Registration Failed");
+            model.addAttribute(ERROR_MSG, "Registration Failed");
         }
 
         Map<Integer,String> countries = userService.getAllCountry();
@@ -105,28 +109,6 @@ public class UserController {
         return "dashboard";
     }
 
-  /*  @GetMapping("/allCountry")
-    public Map<Integer, String> getAllCountry() {
-        return userService.getAllCountry();
-    }
-
-    //fetch allStates based on countryId
-
-    @GetMapping("/getStates/{countryId}")
-    public Map<Integer, String> getStateByState(@PathVariable("countryId") Integer countryId) {
-        return userService.getStateByState(countryId);
-    }
-
-    @GetMapping("/getCities")
-    public Map<Integer, String> getCitiesByState(@RequestParam("stateId") Integer stateId) {
-        return userService.getCitiesByState(stateId);
-    }
-
-    @PostMapping("/register")
-    public boolean register(@RequestBody UserDto userDto) {
-        return userService.register(userDto);
-    }
-*/
     @GetMapping("/getStates")
     @ResponseBody
     public Map<Integer, String> getStateByState(@RequestParam("countryId") Integer countryId) {

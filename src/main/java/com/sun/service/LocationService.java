@@ -4,7 +4,6 @@ import com.sun.entity.City;
 import com.sun.entity.Country;
 import com.sun.entity.State;
 
-import java.util.List;
 
 public interface LocationService {
 
